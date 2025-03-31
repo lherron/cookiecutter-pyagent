@@ -1,4 +1,4 @@
-BAKE_OPTIONS=--no-input --config-file test_config.json
+BAKE_OPTIONS=--no-input
 
 help:
 	@echo "bake 	Generate project using defaults"
@@ -9,7 +9,7 @@ help:
 	
 
 bake:  # Generate project using defaults
-	cookiecutter $(BAKE_OPTIONS) . --overwrite-if-exists
+	cookiecutter --config-file test_config.json $(BAKE_OPTIONS) . --overwrite-if-exists
 
 watch: bake
 	watchmedo shell-command -p '*.*' -c 'make bake -e BAKE_OPTIONS=$(BAKE_OPTIONS)' -W -R -D \{{cookiecutter.project_name}}/

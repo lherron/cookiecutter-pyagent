@@ -1,4 +1,5 @@
 # Byte-compiled / optimized / DLL files
+simple-calculator/
 my-awesome-package/
 my_awesome_package/
 __pycache__/
@@ -34,6 +35,7 @@ Temporary Items
 
 # Distribution / packaging
 .Python
+.env
 env/
 venv/
 build/
