@@ -1,6 +1,6 @@
   {
       "default_context": {
-          "project_name": "My Awesome Package",
+          "project_name": "my-awesome-package",
           "project_slug": "my_awesome_package",
           "github_username": "lherron",
           "description": "A description of my awesome package"

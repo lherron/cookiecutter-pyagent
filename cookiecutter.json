@@ -6,5 +6,5 @@
   "version": "0.1.0",
   "use_pytest": "y",
   "create_author_file": "y",
-  "__gh_slug": "{{ cookiecutter.github_username }}/{{ cookiecutter.project_slug }}"
+  "__gh_slug": "{{ cookiecutter.github_username }}/{{ cookiecutter.project_name }}"
 }

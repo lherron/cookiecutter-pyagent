@@ -1,4 +1,5 @@
 # Byte-compiled / optimized / DLL files
+my-awesome-package/
 my_awesome_package/
 __pycache__/
 *.py[cod]
