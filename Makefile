@@ -1,4 +1,4 @@
-BAKE_OPTIONS=--no-input
+BAKE_OPTIONS=--no-input --config-file test_config.json
 
 help:
 	@echo "bake 	Generate project using defaults"
