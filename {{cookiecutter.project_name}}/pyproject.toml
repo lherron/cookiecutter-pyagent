@@ -35,7 +35,7 @@ homepage = "https://github.com/{{cookiecutter.__gh_slug}}"
 
 
 [project.scripts]
-{{cookiecutter.project_slug}} = "{{cookiecutter.project_slug}}.cli:app"
+{{cookiecutter.project_slug}} = "{{cookiecutter.project_slug}}.cli.cli:app"
 
 
 # Mypy

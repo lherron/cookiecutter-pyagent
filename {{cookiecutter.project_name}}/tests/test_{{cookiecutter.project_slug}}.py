@@ -2,42 +2,29 @@
 
 """Tests for `{{ cookiecutter.project_slug }}` package."""
 
-{% if cookiecutter.use_pytest == 'y' -%}
 import pytest
-{% else %}
-import unittest
-{%- endif %}
+from {{cookiecutter.project_slug}}.config import AppConfig
 
-from {{ cookiecutter.project_slug }} import {{ cookiecutter.project_slug }}
-{%- if cookiecutter.use_pytest == 'y' %}
+# Example test using the app_config fixture from conftest.py
+def test_config_loading(app_config: AppConfig):
+    """Test that the AppConfig fixture loads correctly."""
+    assert app_config is not None
+    assert isinstance(app_config, AppConfig)
+    # Add more specific assertions about the loaded config if needed
+    assert app_config.prefect is not None
+    assert app_config.prefect.project_name == "{{cookiecutter.project_slug}}" # Check default
 
+# Placeholder test function
+def test_placeholder():
+    """A basic placeholder test."""
+    assert True
 
-@pytest.fixture
-def response():
-    """Sample pytest fixture.
+# Example async test (requires pytest-asyncio)
+@pytest.mark.asyncio
+async def test_async_placeholder():
+    """A basic placeholder for an async test."""
+    import asyncio
+    await asyncio.sleep(0.01)
+    assert True
 
-    See more at: http://doc.pytest.org/en/latest/fixture.html
-    """
-    # import requests
-    # return requests.get('https://github.com/audreyr/cookiecutter-pypackage')
-
-
-def test_content(response):
-    """Sample pytest test function with the pytest fixture as an argument."""
-    # from bs4 import BeautifulSoup
-    # assert 'GitHub' in BeautifulSoup(response.content).title.string
-{%- else %}
-
-
-class Test{{ cookiecutter.project_slug|title }}(unittest.TestCase):
-    """Tests for `{{ cookiecutter.project_slug }}` package."""
-
-    def setUp(self):
-        """Set up test fixtures, if any."""
-
-    def tearDown(self):
-        """Tear down test fixtures, if any."""
-
-    def test_000_something(self):
-        """Test something."""
-{%- endif %}
+# Add more specific tests for your template's core functionality
