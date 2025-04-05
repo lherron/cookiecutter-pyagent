@@ -1,5 +1,7 @@
 # Byte-compiled / optimized / DLL files
 simple-calculator/
+repomix-output.xml
+email-triage-agent/
 my-awesome-package/
 my_awesome_package/
 __pycache__/
