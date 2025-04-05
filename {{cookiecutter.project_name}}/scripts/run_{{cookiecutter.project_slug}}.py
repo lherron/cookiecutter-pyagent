@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Script to run the default ideation flow.
+Script to run the default {{cookiecutter.project_slug}} flow.
 """
 
 import os
@@ -35,7 +35,7 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 def main():
-    """Run the ideation flow."""
+    """Run the {{cookiecutter.project_slug}} flow."""
     try:
         # Load configuration
         config = load_config()
@@ -47,9 +47,9 @@ def main():
         asyncio.run({{cookiecutter.project_slug}}_flow())
         
     except Exception as e:
-        print(f"Error running ideation flow: {str(e)}")
+        print(f"Error running {{cookiecutter.project_slug}} flow: {str(e)}")
         stacktrace = traceback.format_exc()
-        logger.error(f"Error running ideation flow: {str(e)}")
+        logger.error(f"Error running {{cookiecutter.project_slug}} flow: {str(e)}")
         logger.error(f"Stack trace: {stacktrace}")
         sys.exit(1)
 
