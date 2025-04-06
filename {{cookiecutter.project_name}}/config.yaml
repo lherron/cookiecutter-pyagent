@@ -1,0 +1,10 @@
+# {{ cookiecutter.project_name }} Configuration
+
+# Prefect Configuration (Required)
+prefect:
+  project_name: {{cookiecutter.project_slug}} # Default: {{cookiecutter.project_slug}}. Env: PREFECT_PROJECT_NAME
+  flow_name: {{cookiecutter.project_name}} Flow # Default: {{cookiecutter.project_name}} Flow. Env: PREFECT_FLOW_NAME
+  schedule_interval_minutes: 30 # Default: 30. Env: PREFECT_SCHEDULE_INTERVAL_MINUTES
+
+# Path to Jinja2 prompt template (Optional, if using LLM)
+prompt_template_path: "templates/prompt.jinja2" # Default: templates/prompt.jinja2. Env: PROMPT_TEMPLATE_PATH

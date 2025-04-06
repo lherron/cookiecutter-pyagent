@@ -1,6 +1,7 @@
 {
   "project_name": "{{ cookiecutter.project_name }}",
   "project_slug": "{{ cookiecutter.project_slug }}",
+  "agent_name": "{{cookiecutter.project_slug.replace('_', ' ').title().replace(' ', '')}}Agent",
   "description": "{{ cookiecutter.description }}",
   "github_username": "{{ cookiecutter.github_username }}",
   "version": "0.1.0",

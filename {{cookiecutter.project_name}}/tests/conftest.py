@@ -14,7 +14,7 @@ def test_config_path() -> str:
     """Returns the path to the test configuration file."""
     # Example: Use a dedicated test config or a sample config
     # Adjust path as needed
-    return os.path.join(PROJECT_ROOT, "config.yaml.sample") # Or a dedicated test.yaml
+    return os.path.join(PROJECT_ROOT, "config.yaml") # Or a dedicated test.yaml
 
 @pytest.fixture(scope="session")
 def app_config(test_config_path: str) -> AppConfig:

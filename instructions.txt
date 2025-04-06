@@ -1,0 +1,5 @@
+We are working on porting our email-triage-agent project back into a cookiecutter template.  The cookiecutter project is in the {{cookiecutter.project_name}} directory.
+
+I will give some instructions for you to focus on specifc files/directories.  You will perform the appropriate changes on the cookiecutter template.
+
+Ignore linter errors, they will fail due to {{cookiecutter}} template syntax.

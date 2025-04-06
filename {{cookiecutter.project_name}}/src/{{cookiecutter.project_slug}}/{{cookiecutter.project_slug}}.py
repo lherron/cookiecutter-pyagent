@@ -9,7 +9,7 @@ from {{cookiecutter.project_slug}}.config import load_config, AppConfig
 # Set up logger
 logger = logging.getLogger(__name__)
 
-class {{cookiecutter.project_name.replace('-', ' ').title().replace(' ', '')}}Agent:
+class {{cookiecutter.project_slug.replace('_', ' ').title().replace(' ', '')}}Agent:
     """Main agent class for the {{cookiecutter.project_name}} application."""
     
     def __init__(self, config: Optional[AppConfig] = None):
@@ -20,7 +20,7 @@ class {{cookiecutter.project_name.replace('-', ' ').title().replace(' ', '')}}Ag
             config: Application configuration. If None, default configuration will be loaded.
         """
         self.config = config if config is not None else load_config()
-        logger.info("{{cookiecutter.project_name.replace('-', ' ').title().replace(' ', '')}}Agent initialized")
+        logger.info("{{cookiecutter.project_slug.replace('_', ' ').title().replace(' ', '')}}Agent initialized")
     
     async def fetch_data(self) -> List[Any]:
         """Fetch data from external sources.

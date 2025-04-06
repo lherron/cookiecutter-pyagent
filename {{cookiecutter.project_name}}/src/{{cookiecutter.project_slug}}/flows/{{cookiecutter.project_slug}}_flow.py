@@ -11,7 +11,7 @@ from datetime import timedelta
 
 # Import configuration loading
 from {{cookiecutter.project_slug}}.config import load_config
-from {{cookiecutter.project_slug}}.{{cookiecutter.project_slug}} import {{cookiecutter.project_name.replace('-', ' ').title().replace(' ', '')}}Agent
+from {{cookiecutter.project_slug}}.{{cookiecutter.project_slug}} import {{cookiecutter.agent_name}}
 from prefect.schedules import Interval
 
 # Get a logger for this flow module
@@ -81,9 +81,9 @@ async def run_agent_task(config_path: Optional[str] = None) -> List[Dict[str, An
         # Initialize the agent with config if provided
         if config_path:
             config = load_config(config_path=config_path)
-            agent = {{cookiecutter.project_name.replace('-', ' ').title().replace(' ', '')}}Agent(config=config)
+            agent = {{cookiecutter.agent_name}}(config=config)
         else:
-            agent = {{cookiecutter.project_name.replace('-', ' ').title().replace(' ', '')}}Agent()
+            agent = {{cookiecutter.agent_name}}()
         
         # Run the agent
         results = await agent.run()

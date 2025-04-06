@@ -1,0 +1,31 @@
+{
+  "mcpServers": {
+    "evai-mcp-server": {
+      "command": "uv",
+      "args": [
+        "run",
+        "--directory",
+        "/Users/lherron/projects/evai-cli",
+        "--with",
+        "mcp[cli]",
+        "mcp",
+        "run",
+        "/Users/lherron/projects/evai-cli/evai/mcp/server.py"
+      ]
+    },
+    "{{cookiecutter.project_slug}}_mcp": {
+      "command": "uv",
+      "args": [
+        "run",
+        "--directory",
+        "/Users/lherron/projects/cookiecutter-pyagent/{{cookiecutter.project_name}}",
+        "--no-sync",
+        "--with",
+        "mcp[cli]",
+        "mcp",
+        "run",
+        "/Users/lherron/projects/cookiecutter-pyagent/{{cookiecutter.project_name}}/src/{{cookiecutter.project_slug}}/mcp/server.py"
+      ]
+    }
+  }
+}

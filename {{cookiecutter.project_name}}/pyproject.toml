@@ -10,18 +10,24 @@ classifiers = [
 ]
 
 dependencies = [
-    "pydantic",
+    "pydantic>=2.0.0",
     "anthropic",
-    "python-dotenv",
+    "python-dotenv>=1.0.0",
     "httpx",
     "rich",
-    "prefect",
+    "prefect>=2.14.0",
+    "mcp[cli]",
+    "jmapc",
+    "tenacity",
+    "requests>=2.31.0",
+    "markdown>=3.5.0",
 ]
 
 
-[project.optional-dependencies]
+[dependency-groups]
 dev = [
     "pytest",
+    "pytest-asyncio",
     "coverage",
     "ruff",
     "mypy"
