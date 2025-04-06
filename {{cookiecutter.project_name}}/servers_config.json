@@ -24,7 +24,7 @@
         "mcp[cli]",
         "mcp",
         "run",
-        "/Users/lherron/projects/cookiecutter-pyagent/{{cookiecutter.project_name}}/src/{{cookiecutter.project_slug}}/mcp/server.py"
+        "/Users/lherron/projects/cookiecutter-pyagent/{{cookiecutter.project_name}}/src/{{cookiecutter.project_slug}}/mcp/{{cookiecutter.project_slug}}_server.py"
       ]
     }
   }
