@@ -39,6 +39,9 @@ bugs = "https://github.com/{{cookiecutter.__gh_slug}}/issues"
 changelog = "https://github.com/{{cookiecutter.__gh_slug}}/blob/master/changelog.md"
 homepage = "https://github.com/{{cookiecutter.__gh_slug}}"
 
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
 
 [project.scripts]
 {{cookiecutter.project_slug}} = "{{cookiecutter.project_slug}}.cli.cli:app"
