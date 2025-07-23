@@ -1,4 +1,4 @@
-# {{ cookiecutter.project_name }} Configuration
+# {{cookiecutter.project_name}} Configuration
 
 # Prefect Configuration (Required)
 prefect:

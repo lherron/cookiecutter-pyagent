@@ -2,19 +2,22 @@
 Common fixtures for testing {{cookiecutter.project_name}}.
 """
 
-import pytest
 import os
-from {{cookiecutter.project_slug}}.config import AppConfig, load_config
+
+import pytest
+from evaitools.config import AppConfig, load_config
 
 # Determine the root directory of the project based on conftest.py location
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
 
 @pytest.fixture(scope="session")
 def test_config_path() -> str:
     """Returns the path to the test configuration file."""
     # Example: Use a dedicated test config or a sample config
     # Adjust path as needed
-    return os.path.join(PROJECT_ROOT, "config.yaml") # Or a dedicated test.yaml
+    return os.path.join(PROJECT_ROOT, "config.yaml")  # Or a dedicated test.yaml
+
 
 @pytest.fixture(scope="session")
 def app_config(test_config_path: str) -> AppConfig:
@@ -28,6 +31,7 @@ def app_config(test_config_path: str) -> AppConfig:
     print(f"Loading test configuration from: {test_config_path}")
     return load_config(config_path=test_config_path)
 
+
 # Add other common fixtures here, e.g., mock clients
 # @pytest.fixture
 # def mock_llm_client():
@@ -36,4 +40,4 @@ def app_config(test_config_path: str) -> AppConfig:
 #     from unittest.mock import MagicMock
 #     mock_client = MagicMock()
 #     mock_client.generate_response.return_value = "Mocked LLM response."
-#     return mock_client 
+#     return mock_client

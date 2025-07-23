@@ -2,40 +2,36 @@
 Command line interface for {{cookiecutter.project_name}}.
 """
 
+import asyncio
 import logging
 import traceback
-import sys
-import asyncio
-import os
-from typing import Optional
-from functools import partial
 from datetime import timedelta
+from functools import partial
+from typing import Any
 
 import typer
-from rich import print
 
 # Import config loading and the main flow
-from {{cookiecutter.project_slug}}.config import AppConfig, load_config
+from evaitools.config import load_config
 from pydantic import ValidationError
+from rich import print
+
 from {{cookiecutter.project_slug}}.flows import {{cookiecutter.project_slug}}_flow
 
 # Basic logging configuration
 logging.basicConfig(
     level=logging.INFO,  # Default level
     format="%(asctime)s.%(msecs)03d | %(levelname)-8s | %(name)s:%(lineno)d - %(message)s",
-    datefmt="%Y-%m-%d %H:%M:%S"
+    datefmt="%Y-%m-%d %H:%M:%S",
 )
 # Get the root logger for CLI messages
 logger = logging.getLogger("{{cookiecutter.project_slug}}.cli")
 
 # Create the Typer app
-app = typer.Typer(
-    name="{{cookiecutter.project_slug}}",
-    help="{{cookiecutter.description}}",
-    add_completion=False
-)
+app = typer.Typer(name="{{cookiecutter.project_slug}}", help="A new {{cookiecutter.project_name}} project", add_completion=False)
 
-def setup_logging(debug: bool):
+
+def setup_logging(debug: bool) -> None:
     """Configure logging level."""
     level = logging.DEBUG if debug else logging.INFO
     # Configure root logger level
@@ -52,20 +48,17 @@ def setup_logging(debug: bool):
 
 # --- CLI Commands ---
 
+
 @app.command()
 def run(
-    config_path: Optional[str] = typer.Option(
-        None, "--config", "-c", help="Path to the configuration file (e.g., config.yaml)."
-    ),
-    debug: bool = typer.Option(
-        False, "--debug", "-d", help="Enable debug logging output."
-    )
-):
+    config_path: str | None = typer.Option(None, "--config", "-c", help="Path to the configuration file (e.g., config.yaml)."),
+    debug: bool = typer.Option(False, "--debug", "-d", help="Enable debug logging output."),
+) -> None:
     """
     Run the {{cookiecutter.project_name}} agent flow once.
     """
     setup_logging(debug)
-    logger.info(f"Running {{cookiecutter.project_name}} flow...")
+    logger.info("Running {{cookiecutter.project_name}} flow...")
 
     try:
         # Configuration is loaded implicitly by the flow if needed,
@@ -74,9 +67,9 @@ def run(
 
         # Run the async Prefect flow
         # Prefect flows are often async, use asyncio.run
-        async def _run_flow():
-             # The flow itself should handle config loading using load_config(config_path)
-             await {{cookiecutter.project_slug}}_flow(config_path=config_path)
+        async def _run_flow() -> Any:
+            # The flow itself should handle config loading using load_config(config_path)
+            return await {{cookiecutter.project_slug}}_flow(config_path=config_path)
 
         asyncio.run(_run_flow())
 
@@ -85,29 +78,24 @@ def run(
     except FileNotFoundError:
         logger.error(f"Error: Configuration file not found at '{config_path}'.")
         if not config_path:
-             logger.error("Specify the config file with --config or ensure config.yaml exists.")
+            logger.error("Specify the config file with --config or ensure config.yaml exists.")
         raise typer.Exit(code=1)
-    except ValidationError as e: # Catch Pydantic validation errors
+    except ValidationError as e:  # Catch Pydantic validation errors
         logger.error(f"Configuration validation error: {e}")
         raise typer.Exit(code=1)
     except Exception as e:
         logger.error(f"An unexpected error occurred during flow execution: {e}")
         if debug:
-            logger.error(traceback.format_exc()) # Print traceback if in debug mode
+            logger.error(traceback.format_exc())  # Print traceback if in debug mode
         raise typer.Exit(code=1)
+
 
 @app.command()
 def schedule(
-    config_path: Optional[str] = typer.Option(
-        None, "--config", "-c", help="Path to the configuration file (e.g., config.yaml)."
-    ),
-    deploy: bool = typer.Option(
-        False, "--deploy", "-d", help="Deploy the flow to run on the configured schedule."
-    ),
-    debug: bool = typer.Option(
-        False, "--debug", help="Enable debug logging output."
-    )
-):
+    config_path: str | None = typer.Option(None, "--config", "-c", help="Path to the configuration file (e.g., config.yaml)."),
+    deploy: bool = typer.Option(False, "--deploy", "-d", help="Deploy the flow to run on the configured schedule."),
+    debug: bool = typer.Option(False, "--debug", help="Enable debug logging output."),
+) -> None:
     """
     Schedule the {{cookiecutter.project_name}} agent flow to run periodically.
     """
@@ -129,38 +117,38 @@ def schedule(
             # Replace 'register_flow_schedule' with your actual deployment mechanism.
             # Example using Prefect's serve (adjust imports and function signature):
             try:
-                 from prefect import serve
+                from prefect import serve
 
-                 # Create a partial function or use parameters with serve if flow needs config_path
-                 flow_to_serve = partial({{cookiecutter.project_slug}}_flow, config_path=config_path)
-                 # Alternatively, if flow loads config internally based on runtime context:
-                 # flow_to_serve = {{cookiecutter.project_slug}}_flow
+                # Create a partial function or use parameters with serve if flow needs config_path
+                flow_to_serve = partial({{cookiecutter.project_slug}}_flow, config_path=config_path)
+                # Alternatively, if flow loads config internally based on runtime context:
+                # flow_to_serve = {{cookiecutter.project_slug}}_flow
 
-                 deployment = serve(
-                     flow_to_serve.to_deployment( # type: ignore
-                         name=f"{config.prefect.flow_name}-deployment",
-                         schedule=timedelta(minutes=interval),
-                         # Add tags, parameters, etc. as needed
-                     )
-                 )
-                 # Note: serve() is typically blocking. You might run this in a separate process
-                 # or use Prefect Cloud/Server agents for persistent scheduling.
-                 # For a simple CLI trigger, the above might hang. Consider just logging intent.
+                # Call serve but don't assign to an unused variable
+                serve(
+                    flow_to_serve.to_deployment(  # type: ignore
+                        name=f"{config.prefect.flow_name}-deployment",
+                        schedule=timedelta(minutes=interval),
+                        # Add tags, parameters, etc. as needed
+                    )
+                )
+                # Note: serve() is typically blocking. You might run this in a separate process
+                # or use Prefect Cloud/Server agents for persistent scheduling.
+                # For a simple CLI trigger, the above might hang. Consider just logging intent.
 
-                 logger.info(f"Prefect `serve` called for flow '{config.prefect.flow_name}' "
-                             f"with interval {interval} minutes. Ensure an agent is running.")
-                 # If serve is non-blocking or you adapt this:
-                 # logger.info("Flow deployment command issued.")
+                logger.info(f"Prefect `serve` called for flow '{config.prefect.flow_name}' with interval {interval} minutes. Ensure an agent is running.")
+                # If serve is non-blocking or you adapt this:
+                # logger.info("Flow deployment command issued.")
 
             except ImportError:
-                 logger.error("Prefect `serve` not available. Cannot deploy schedule directly from CLI this way.")
-                 logger.error("Ensure Prefect is installed and consider alternative deployment methods (e.g., `prefect deploy`).")
-                 raise typer.Exit(code=1)
+                logger.error("Prefect `serve` not available. Cannot deploy schedule directly from CLI this way.")
+                logger.error("Ensure Prefect is installed and consider alternative deployment methods (e.g., `prefect deploy`).")
+                raise typer.Exit(code=1)
             except Exception as deploy_exc:
-                 logger.error(f"Error during flow deployment/serving: {deploy_exc}")
-                 if debug:
-                      logger.error(traceback.format_exc())
-                 raise typer.Exit(code=1)
+                logger.error(f"Error during flow deployment/serving: {deploy_exc}")
+                if debug:
+                    logger.error(traceback.format_exc())
+                raise typer.Exit(code=1)
 
         else:
             logger.info(f"Flow schedule: Run every {interval} minutes.")
@@ -169,7 +157,7 @@ def schedule(
     except FileNotFoundError:
         logger.error(f"Error: Configuration file not found at '{config_path}'.")
         if not config_path:
-             logger.error("Specify the config file with --config or ensure config.yaml exists.")
+            logger.error("Specify the config file with --config or ensure config.yaml exists.")
         raise typer.Exit(code=1)
     except ValidationError as e:
         logger.error(f"Configuration validation error: {e}")
@@ -182,11 +170,7 @@ def schedule(
 
 
 @app.command()
-def info(
-    config_path: Optional[str] = typer.Option(
-        None, "--config", "-c", help="Path to the configuration file (e.g., config.yaml)."
-    )
-):
+def info(config_path: str | None = typer.Option(None, "--config", "-c", help="Path to the configuration file (e.g., config.yaml).")) -> None:
     """
     Display loaded configuration information.
     """
@@ -235,7 +219,7 @@ def info(
     except FileNotFoundError:
         logger.error(f"Error: Configuration file not found at '{config_path}'.")
         if not config_path:
-             logger.error("Specify the config file with --config or ensure config.yaml exists.")
+            logger.error("Specify the config file with --config or ensure config.yaml exists.")
         raise typer.Exit(code=1)
     except ValidationError as e:
         logger.error(f"Configuration validation error: {e}")
@@ -244,11 +228,14 @@ def info(
         logger.error(f"An unexpected error occurred while displaying configuration: {e}")
         raise typer.Exit(code=1)
 
+
 # --- Main Execution ---
 
-def main():
+
+def main() -> None:
     """Main entry point for the CLI application."""
     app()
 
+
 if __name__ == "__main__":
-    main() 
+    main()

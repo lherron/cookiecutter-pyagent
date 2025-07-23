@@ -2,27 +2,29 @@
 Prefect flow definition for {{cookiecutter.project_name}}.
 """
 
-from prefect import flow, task, get_run_logger
-from typing import Optional, List, Dict, Any
-import logging
 import asyncio
+import logging
 import sys
-from datetime import timedelta
+from typing import Any
 
 # Import configuration loading
-from {{cookiecutter.project_slug}}.config import load_config
+from evaitools.config import load_config
+from prefect import flow, get_run_logger, task
+from prefect.schedules import Cron
+from rich import print
+
 from {{cookiecutter.project_slug}}.{{cookiecutter.project_slug}} import {{cookiecutter.agent_name}}
-from prefect.schedules import Interval
 
 # Get a logger for this flow module
 logger = logging.getLogger(__name__)
 
-def configure_prefect_logging():
+
+def configure_prefect_logging() -> None:
     """Configures Python logging to integrate with Prefect's run logger."""
     prefect_logger = get_run_logger()
 
     class PrefectHandler(logging.Handler):
-        def emit(self, record):
+        def emit(self, record: logging.LogRecord) -> None:
             log_entry = self.format(record)
             # Map standard levels to Prefect levels
             level = record.levelname.lower()
@@ -39,10 +41,7 @@ def configure_prefect_logging():
                 print(f"Error logging to Prefect: {e}\nOriginal log: {log_entry}", file=sys.stderr)
 
     # Configure formatter
-    formatter = logging.Formatter(
-        "%(asctime)s.%(msecs)03d | %(levelname)-8s | %(name)s:%(lineno)d - %(message)s",
-        datefmt="%Y-%m-%d %H:%M:%S"
-    )
+    formatter = logging.Formatter("%(asctime)s.%(msecs)03d | %(levelname)-8s | %(name)s:%(lineno)d - %(message)s", datefmt="%Y-%m-%d %H:%M:%S")
     handler = PrefectHandler()
     handler.setFormatter(formatter)
 
@@ -64,19 +63,20 @@ def configure_prefect_logging():
 
     logger.info("Prefect logging configured for '{{cookiecutter.project_slug}}' package.")
 
+
 @task(retries=3, retry_delay_seconds=60, log_prints=True)
-async def run_agent_task(config_path: Optional[str] = None) -> List[Dict[str, Any]]:
+async def run_agent_task(config_path: str | None = None) -> list[dict[str, Any]]:
     """
     Task to run the {{cookiecutter.project_name}} agent.
-    
+
     Args:
         config_path: Path to configuration file (optional)
-    
+
     Returns:
         List[Dict[str, Any]]: Results of the agent run
     """
     logger.info("Starting {{cookiecutter.project_slug}} agent task")
-    
+
     try:
         # Initialize the agent with config if provided
         if config_path:
@@ -84,62 +84,62 @@ async def run_agent_task(config_path: Optional[str] = None) -> List[Dict[str, An
             agent = {{cookiecutter.agent_name}}(config=config)
         else:
             agent = {{cookiecutter.agent_name}}()
-        
+
         # Run the agent
-        results = await agent.run()
+        results: list[dict[str, Any]] = await agent.run()
         logger.info(f"Agent run completed with {len(results)} results")
         return results
-        
+
     except Exception as e:
         logger.error(f"Error in {{cookiecutter.project_slug}} agent task: {e}")
         raise
 
+
 @flow(name="{{cookiecutter.project_slug}}.{{cookiecutter.project_slug}}_flow", log_prints=True)
-async def {{cookiecutter.project_slug}}_flow(config_path: Optional[str] = None) -> List[Dict[str, Any]]:
+async def {{cookiecutter.project_slug}}_flow(config_path: str | None = None) -> list[dict[str, Any]]:
     """
     Main flow for the {{cookiecutter.project_name}} agent.
-    
+
     Args:
         config_path: Path to configuration file (optional)
-        
+
     Returns:
         List[Dict[str, Any]]: Results from the agent run
     """
     configure_prefect_logging()
     logger.info("Starting {{cookiecutter.project_slug}} flow")
-    
+
     try:
         # Run the agent
-        results = await run_agent_task(config_path)
+        results: list[dict[str, Any]] = await run_agent_task(config_path)
         logger.info(f"{{cookiecutter.project_slug}} flow completed with {len(results)} results")
         return results
-        
+
     except Exception as e:
         logger.error(f"Flow failed: {e}")
         raise
 
-def register_flow_schedule(config_path: Optional[str] = None) -> None:
+
+def register_flow_schedule(config_path: str | None = None) -> None:
     """
     Register the flow with a schedule based on configuration.
-    
+
     Args:
         config_path: Path to configuration file (optional)
     """
-    config = load_config(config_path=config_path) if config_path else load_config()
-    schedule_interval_minutes = config.prefect.schedule_interval_minutes
-    
-    schedule=Interval(
-        timedelta(minutes=schedule_interval_minutes),
-        timezone="UTC"
-    )    
+    # config = load_config(config_path=config_path) if config_path else load_config() # No longer needed for schedule
+    # schedule_interval_minutes = config.prefect.schedule_interval_minutes # No longer needed
 
-    {{cookiecutter.project_slug}}_flow.serve(
-        name="{{cookiecutter.project_slug}}",
-        schedule=schedule
+    schedule = Cron(
+        "0 4 * * *",  # Run daily at 4:00 AM
+        timezone="America/Chicago",  # Updated timezone
     )
-    
-    logger.info(f"Flow scheduled to run every {schedule_interval_minutes} minutes")
+
+    {{cookiecutter.project_slug}}_flow.serve(name="{{cookiecutter.project_slug}}", schedule=schedule)
+
+    logger.info("Flow scheduled to run daily at 4:00 AM America/Chicago")  # Updated log message
+
 
 if __name__ == "__main__":
     # Run flow directly
-    asyncio.run({{cookiecutter.project_slug}}_flow()) 
+    asyncio.run({{cookiecutter.project_slug}}_flow())

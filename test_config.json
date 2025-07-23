@@ -1,7 +1,7 @@
   {
       "default_context": {
-          "project_name": "simple-calculator",
-          "project_slug": "calc",
+          "project_name": "simple-calc",
+          "project_slug": "simple_calc",
           "github_username": "lherron",
           "description": "A description of my awesome package"
       }                                                                                                                                                                  
