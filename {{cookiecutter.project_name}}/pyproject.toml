@@ -70,4 +70,4 @@ skip-magic-trailing-comma = false
 line-ending = "lf"
 
 [tool.uv.sources]
-evaitools = { path = "../../evaitools", editable = true }
+evaitools = { path = "../evaitools", editable = true }
